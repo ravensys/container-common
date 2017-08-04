@@ -104,7 +104,7 @@ function ci_volume_cleanup() {
 
     echo "        -> Removing files created by contianer"
     docker run --rm -v "${volume_dir}:/tmp/volume-cleanup:Z" "${IMAGE_NAME}" \
-        bash -c 'find /tmp/volume-cleanup/ -uid 26 -delete'
+        bash -c 'find /tmp/volume-cleanup/ -uid "$(id -u)" -delete'
 
     echo "        -> Removing volume directory"
     rm -rf "${volume_dir}"
@@ -114,9 +114,12 @@ function ci_volume_create() {
     local name="$1"; shift
 
     local volume_dir; volume_dir="$( mktemp --directory --tmpdir "${TEST_SUITE_NAME}_volume.XXXXXX" )"
-    setfacl -m u:26:rwx "${volume_dir}"
-
     echo "${volume_dir}" > "${VOLFILEDIR}/${name}"
+
+    if [ "function" == "$( type -t ci_volume_set_permissions )" ]; then
+        ci_volume_set_permissions "${volume_dir}"
+    fi
+
     echo "${volume_dir}"
 }
 
