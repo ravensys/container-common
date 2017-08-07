@@ -52,3 +52,31 @@ function source_scripts() {
         esac
     done
 }
+
+function version_ge() {
+    local ver1="$1"; shift
+    local ver2="$1"; shift
+
+    [ "$( printf "%s\n" "${ver1}" "${ver2}" | sort -brV | head -n 1 )" == "${ver1}" ]
+}
+
+function version_gt() {
+    local ver1="$1"; shift
+    local ver2="$1"; shift
+
+    [ "$( printf "%s\n" "${ver1}" "${ver2}" | sort -bV | head -n 1 )" != "${ver1}" ]
+}
+
+function version_le() {
+    local ver1="$1"; shift
+    local ver2="$1"; shift
+
+    [ "$( printf "%s\n" "${ver1}" "${ver2}" | sort -bV | head -n 1 )" == "${ver1}" ]
+}
+
+function version_lt() {
+    local ver1="$1"; shift
+    local ver2="$1"; shift
+
+    [ "$( printf "%s\n" "${ver1}" "${ver2}" | sort -brV | head -n 1 )" != "${ver1}" ]
+}
